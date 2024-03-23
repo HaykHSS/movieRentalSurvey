@@ -3,6 +3,7 @@ import { db } from "./config/firebaseConfig";
 import { getQuestions } from "./config/getQuestions";
 import { doc, updateDoc } from "firebase/firestore";
 import Question, { IQuestion, IAnswer } from "./components/Question";
+import detectDeviceType from "./utils/detectDevice";
 
 function App() {
   const [questions, setQuestions] = useState<IQuestion[]>([]);
@@ -11,6 +12,7 @@ function App() {
   const [answers, setAnswers] = useState<{
     [key: string]: string | number | string[];
   }>({});
+  const userDevice = detectDeviceType();
 
   const handleBack = () => {
     if (currentQuestionIndex > 0) {
@@ -116,8 +118,8 @@ function App() {
               </h3>
               <div>
                 {Object.entries(answers).map(([questionId, userAnswer]) => (
-                  <p key={questionId}>{`${
-                    questions[+questionId - 1].questionLabel
+                  <p key={questionId}>{`${userDevice === "mobile" || userDevice === "tablet" ?
+                    questions[+questionId - 1].id : questions[+questionId - 1].questionLabel
                   }: ${userAnswer}`}</p>
                 ))}
               </div>
